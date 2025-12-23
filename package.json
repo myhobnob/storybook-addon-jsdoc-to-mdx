@@ -1,7 +1,7 @@
 {
-  "name": "storybook-addon-jsdoc-to-mdx",
-  "version": "1.2.0",
-  "description": "Storybook addon that automatically generates MDX documentation from JSDoc comments in your TypeScript and JavaScript files. Supports HTML tags in comments, complex TypeScript types, and integrates seamlessly with Storybook 7.x and 8.x.",
+  "name": "@myhobnob/storybook-addon-jsdoc-to-mdx",
+  "version": "1.3.0",
+  "description": "Storybook addon that automatically generates MDX documentation from JSDoc comments in your TypeScript and JavaScript files. Supports HTML tags in comments, complex TypeScript types, outputDirectory option, and integrates seamlessly with Storybook 7.x and 8.x.",
   "author": "Łukasz Różewicz <lukasz.rozewicz@lucaswebart.pl>",
   "keywords": [
     "storybook-addons",
@@ -41,7 +41,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lrozewicz/storybook-addon-jsdoc-to-mdx.git"
+    "url": "https://github.com/myhobnob/storybook-addon-jsdoc-to-mdx.git"
   },
   "main": "presets.js",
   "scripts": {

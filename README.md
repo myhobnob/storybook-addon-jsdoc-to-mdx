@@ -63,13 +63,13 @@ This addon is framework-agnostic and should work with any UI framework that Stor
 To install the addon, run the following command in your terminal:
 
 ```bash
-npm install storybook-addon-jsdoc-to-mdx --save-dev
+npm install @myhobnob/storybook-addon-jsdoc-to-mdx --save-dev
 ```
 
 Or if you prefer using Yarn:
 
 ```bash
-yarn add storybook-addon-jsdoc-to-mdx --dev
+yarn add @myhobnob/storybook-addon-jsdoc-to-mdx --dev
 ```
 
 ## Usage
@@ -83,10 +83,11 @@ module.exports = {
   addons: [
     // other addons
     {
-      name: 'storybook-addon-jsdoc-to-mdx',
+      name: '@myhobnob/storybook-addon-jsdoc-to-mdx',
       options: {
         folderPaths: ['./src/'], // paths to folders with JS/TS code
-        extensions: ['ts', 'js'] // file extensions to include
+        extensions: ['ts', 'js'], // file extensions to include
+        outputDirectory: './stories/api/' // optional: output to separate folder
       }
     }
   ]
@@ -111,10 +112,11 @@ const config = {
     "@storybook/addon-onboarding",
     "@storybook/addon-interactions",
     {
-      name: "storybook-addon-jsdoc-to-mdx",
+      name: "@myhobnob/storybook-addon-jsdoc-to-mdx",
       options: {
         folderPaths: ["./code"],
-        extensions: ["ts", "js"]
+        extensions: ["ts", "js"],
+        outputDirectory: "./stories/api/" // optional: output to separate folder
       },
     },
     "@chromatic-com/storybook"
@@ -187,6 +189,26 @@ The addon can be configured with the following options:
 
 - `folderPaths`: An array of paths to folders containing your source files.
 - `extensions`: An array of file extensions to be included in the documentation generation process.
+- `outputDirectory`: (Optional) Path to a directory where generated MDX files should be written. If not specified, files are generated in-place next to source files.
+
+### Output Directory Example
+
+To keep your source tree clean, you can output generated documentation to a separate folder:
+
+```javascript
+{
+  name: "@myhobnob/storybook-addon-jsdoc-to-mdx",
+  options: {
+    folderPaths: ["./src/actions/", "./src/services/"],
+    extensions: ["js", "ts"],
+    outputDirectory: "./stories/api/"  // Generated docs go here
+  }
+}
+```
+
+This will generate MDX files in `./stories/api/` while preserving the relative directory structure from your source folders. For example:
+- `src/actions/event.js` → `stories/api/event.doc.mdx`
+- `src/services/api.js` → `stories/api/api.doc.mdx`
 
 ## Features
 

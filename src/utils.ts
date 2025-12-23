@@ -9,25 +9,41 @@ export function removeCommentsFromCode(code: string): string {
 }
 
 export function findBasePath(filePath: string, folderPaths: string[]): string {
+  // Resolve all paths to absolute for consistent comparison
+  const absoluteFilePath = path.resolve(filePath);
   for (const folderPath of folderPaths) {
-    if (filePath.startsWith(folderPath)) {
-      return folderPath;
+    const absoluteFolderPath = path.resolve(folderPath);
+    if (absoluteFilePath.startsWith(absoluteFolderPath)) {
+      return absoluteFolderPath;
     }
   }
   return "";
 }
 
 export function getPathName(filePath: string, baseDir: string): string {
-  const relativePath = path.relative(baseDir, filePath);
+  // Resolve paths to absolute for consistent relative path computation
+  const absoluteFilePath = path.resolve(filePath);
+  const absoluteBaseDir = path.resolve(baseDir);
+  const relativePath = path.relative(absoluteBaseDir, absoluteFilePath);
   const dirName = path.dirname(relativePath);
   const extenstion = path.extname(filePath);
   const baseName = path.basename(relativePath, extenstion);
 
+  // Always include base folder name as prefix for unique titles
+  const folderName = path.basename(absoluteBaseDir);
+
   if (baseName === "index") {
-    return dirName.replace(/\\/g, "/");
+    // If dirName is "." (file at root), use just the folder name
+    if (dirName === ".") {
+      return folderName.replace(/\\/g, "/");
+    }
+    return path.join(folderName, dirName).replace(/\\/g, "/");
   }
 
-  return path.join(dirName, baseName).replace(/\\/g, "/");
+  if (dirName === ".") {
+    return path.join(folderName, baseName).replace(/\\/g, "/");
+  }
+  return path.join(folderName, dirName, baseName).replace(/\\/g, "/");
 }
 export function extractMethodFromCode(code: string, methodName: string): string {
   const sourceFile = ts.createSourceFile(
@@ -131,14 +147,16 @@ export function formatJsDocComment(raw: string): string {
   }
 
   // Fallback for other tags
+  // Skip tags that don't add value in MDX output
+  const skipTags = ['param', 'return', 'returns', 'example', 'memberof', 'subcategory', 'module', 'fileoverview'];
   Object.entries(grouped).forEach(([tagName, tagList]) => {
-    if (['param', 'return', 'returns', 'example'].includes(tagName)) return;
+    if (skipTags.includes(tagName)) return;
 
     const heading = tagName.charAt(0).toUpperCase() + tagName.slice(1);
     const lines = tagList
       .map(t =>
         t.name
-          ? `- \`${t.name}\`${t.type ? ` *${t.type}*` : ''} — ${escapeHtmlTags(t.description)}`
+          ? `- \`${t.name}\`${t.type ? ` *${escapeHtmlTags(t.type)}*` : ''} — ${escapeHtmlTags(t.description)}`
           : escapeHtmlTags(t.description),
       )
       .join('\n');
